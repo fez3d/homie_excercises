@@ -1,5 +1,7 @@
+var url = 'https://api.myjson.com/bins'
+
 function fillInfo() {
-  $.get(`https://api.myjson.com/bins/${getUri()}`, data => {
+  $.get(`${url}/${getUri()}`, data => {
     $("#first_name").text(data.first_name);
     $("#last_name").text(data.last_name);
     $("#email").text(data.email);
@@ -7,7 +9,7 @@ function fillInfo() {
 }
 
 function fillInputs() {
-  $.get(`https://api.myjson.com/bins/${getUri()}`, data => {
+  $.get(`${url}/${getUri()}`, data => {
     $("#first_name").val(data.first_name);
     $("#last_name").val(data.last_name);
     $("#email").val(data.email);
@@ -26,7 +28,7 @@ function updateUser() {
 
   if (hasEmptyField() && validateEmail()) {
     $.ajax({
-      url: `https://api.myjson.com/bins/${getUri()}`,
+      url: `${url}/${getUri()}`,
       type: "PUT",
       data: data,
       contentType: "application/json; charset=utf-8",
@@ -50,7 +52,7 @@ function saveUser() {
 
   if (hasEmptyField() && validateEmail()) {
     $.ajax({
-      url: "https://api.myjson.com/bins",
+      url: url,
       type: "POST",
       data: data,
       contentType: "application/json; charset=utf-8",
