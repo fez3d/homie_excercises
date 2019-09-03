@@ -1,66 +1,75 @@
 const url = "https://api.myjson.com/bins";
 initialize();
 
-function fillInfo() {
+function showUserInfo() {
   $.get(`${url}/${getUri()}`, data => {
-    $("#first_name").text(data.first_name);
-    $("#last_name").text(data.last_name);
-    $("#email").text(data.email);
+    $("#js-first-name").text(data.first_name);
+    $("#js-last-name").text(data.last_name);
+    $("#js-email").text(data.email);
   });
 }
 
-function fillInputs() {
+function editUserInfo() {
   $.get(`${url}/${getUri()}`, data => {
-    $("#first_name").val(data.first_name);
-    $("#last_name").val(data.last_name);
-    $("#email").val(data.email);
+    $("#js-first-name").val(data.first_name);
+    $("#js-last-name").val(data.last_name);
+    $("#js-email").val(data.email);
   });
 }
 
 function updateUser() {
-  let first_name = $("#first_name").val();
-  let last_name = $("#last_name").val();
-  let email = $("#email").val();
+  let firstName = $("#js-first-name").val();
+  let lastName = $("#js-last-name").val();
+  let email = $("#js-email").val();
   let data = `{
-    "first_name":"${first_name}", 
-    "last_name":"${last_name}",
-    "email":"${email}"
+    first_name: ${firstName}, 
+    last_name: ${lastName},
+    email:${email}
   }`;
+  let jsonData = JSON.stringify(data);
 
-  if (hasEmptyField() && validateEmail()) {
+  if (!hasEmptyField() && isEmail()) {
     $.ajax({
       url: `${url}/${getUri()}`,
       type: "PUT",
-      data: data,
+      data: jsonData,
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: () => {
         window.location.replace(`profile.html?uri=${getUri()}`);
+      },
+      error: () => {
+        alert("Error al actualizar");
       }
     });
   }
 }
 
 function saveUser() {
-  let first_name = $("#first_name").val();
-  let last_name = $("#last_name").val();
-  let email = $("#email").val();
+  let firstName = $("#js-first-name").val();
+  let lastName = $("#js-last-name").val();
+  let email = $("#js-email").val();
   let data = `{
-    "first_name":"${first_name}", 
-    "last_name":"${last_name}",
-    "email":"${email}"
+    first_name:${firstName}, 
+    last_name:${lastName},
+    email:${email}
   }`;
+  let jsonData = JSON.stringify(data)
 
-  if (hasEmptyField() && validateEmail()) {
+
+  if (!hasEmptyField() && isEmail()) {
     $.ajax({
       url: url,
       type: "POST",
-      data: data,
+      data: jsonData,
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: data => {
         let uri = data.uri.split("/").pop();
         window.location.replace(`profile.html?uri=${uri}`);
+      },
+      error: () => {
+        alert("Error al crear");
       }
     });
   }
@@ -76,20 +85,20 @@ function getUri() {
 }
 
 function hasEmptyField() {
-  let first_name = $("#first_name").val();
-  let last_name = $("#last_name").val();
-  let email = $("#email").val();
+  let firstName = $("#js-first-name").val();
+  let lastName = $("#js-last-name").val();
+  let email = $("#js-email").val();
 
-  if (first_name == "" || last_name == "" || email == "") {
+  if (firstName.trim() == "" || lastName.trim() == "" || email.trim() == "") {
     alert("Campo Vacio");
-    return false;
+    return true;
   }
 
-  return true;
+  return false;
 }
 
-function validateEmail() {
-  let email = $("#email").val();
+function isEmail() {
+  let email = $("#js-email").val();
   var regEx = /[a-zA-Z0-9._]+[@]+[a-zA-Z0-9]+[.]+[a-zA-Z]{2,6}/;
 
   if (regEx.test(email)) {
@@ -107,14 +116,15 @@ function isEditable() {
 
 function initialize() {
   if (window.location.pathname.split("/").pop() == "profile.html") {
-    fillInfo();
-    $(document).on("click", "#edit", editUser);
+    showUserInfo();
+    $(document).on("click", "#js-edit", editUser);
+    return;
+  }
+
+  if (isEditable()) {
+    editUserInfo();
+    $(document).on("click", "#js-save", updateUser);
   } else {
-    if (isEditable()) {
-      fillInputs();
-      $(document).on("click", "#save", updateUser);
-    } else {
-      $(document).on("click", "#save", saveUser);
-    }
+    $(document).on("click", "#js-save", saveUser);
   }
 }

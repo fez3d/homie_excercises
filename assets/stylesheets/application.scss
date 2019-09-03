@@ -5,6 +5,14 @@ $button-hover-background-color: #46c7c7;
 $button-font-color: #ffffff;
 $input-background-color: #f2f2f2;
 
+@mixin property($background) {
+  font-family: $page-font;
+  background: $background;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+}
+
 body {
   background: $background-color;
   font-family: $page-font;
@@ -24,22 +32,14 @@ body {
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2),
           0 5px 5px 0 rgba(0, 0, 0, 0.24);
 
-        input {
-          font-family: $page-font;
-          background: $input-background-color;
-          width: 100%;
-          border: 0;
+        input { 
+          @include property($input-background-color);
           margin: 0 0 15px;
-          padding: 15px;
           box-sizing: border-box;
         }
 
         button {
-          font-family: $page-font;
-          background: $button-background-color;
-          width: 100%;
-          border: 0;
-          padding: 15px;
+          @include property($button-background-color);
           color: $button-font-color;
         }
 
